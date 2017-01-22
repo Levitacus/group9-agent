@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.Random;
 
 /**
  * The ReactiveAgent class provides an automated Reactive Agent to interact
@@ -80,12 +81,15 @@ public class ReactiveAgent extends Frame
 	//-----------------------------EDITS----------------------------------------------------------
 	//the agent function determines the effector command for the Reactive Agent
 	//@return the command to be sent to the Grid
-	public String agentFunction()
+	public void moveByHeading()
 	{
+		//variables
+		String command = "";
+		
 		//consumes food if in inventory
 		if(food)
 		{
-			return "u";
+			command = "u";
 		}
 		//agent moves based on sensory heading
 		else
@@ -94,25 +98,25 @@ public class ReactiveAgent extends Frame
 			if(this.heading.equals("f"))
 			{
 				//move forward
-				return "f";
+				command = "f";
 			}///end if
 			//moves back
 			else if(this.heading.equals("b"))
 			{
 				//send command to move back
-				return "b";
+				command = "b";
 			}//end else if
 			//moves left
 			else if(this.heading.equals("l"))
 			{
 				//send command to move left
-				return "l";
+				command = "l";
 			}//end else if
 			//moves right
 			else if(this.heading.equals("r"))
 			{
 				//send command to move right
-				return "r";
+				command = "r";
 			}//end else if
 			//grabs food
 			else if(this.heading.equals("h"))
@@ -121,13 +125,135 @@ public class ReactiveAgent extends Frame
 				this.food = true;
 				
 				//send command to grab food
-				return "g";
+				command = "g";
 			}//end else if
 			 
-			return "";
 		}//end else
+	
+		//executes command
+		executeSequence(command);
+	}//end moveByHeading
+	
+	public void moveRandomly()
+	{
+		//creates random number generator
+		Random random = new Random();
 		
+		//sets num to either 1 or 2
+		int num = random.nextInt(2);
+		
+		int repeat = 6;
+		
+		while(repeat != 0)
+		{
+			//randomly moves left or right
+			if(num == 1)
+			{
+				//moves left
+				executeSequence("l");
+			}//end if
+			else
+			{
+				//moves right
+				executeSequence("r");
+			}//end else
+			
+			//then moves forward randomly 0-4 times
+			num = random.nextInt(5)+1;
+			while(num != 0)
+			{
+				executeSequence("f");
+				
+				num--;
+			}//end while
+			
+			repeat--;
+			
+		}//end while
+	}//end moveRandomly
+	
+	public void moveAroundObstacle()
+	{
+		//creates random number generator
+		Random random = new Random();
+		
+		//sets num to either 1 or 2
+		int num = random.nextInt(2);
+		
+		//# of times to repeat
+		int repeat = 10;
+		
+		while(repeat != 0)
+		{
+			//randomly moves left or right
+			if(num == 1)
+			{
+				//moves left
+				executeSequence("l");
+					
+				//then moves forward randomly 0-4 times
+				num = random.nextInt(5)+1;
+				
+				while(num != 0)
+				{
+					executeSequence("f");
+					
+					num--;
+				}//end while
+			}//end moves around left
+			else
+			{
+				//moves right
+				executeSequence("r");
+				
+				//then moves forward randomly 0-4 times
+				num = random.nextInt(5)+1;
+				
+				while(num != 0)
+				{
+					executeSequence("f");
+					num--;
+				}//end while
+			}//end moves right
+			
+			//decrement repeat
+			repeat--;
+		}//end while
+	}//end moveAroundObstacle
+	
+	
+	public void executeSequence(String command)
+	{
+		//execute command
+		sendEffectorCommand(command);
+		
+		//update environment
+		gd.repaint();
+		
+		//obtain new sensory packet
+		getSensoryInfo();
+	}//executeSequence
+	
+	
+	
+	public void agentFunction()
+	{
+		//makes first move based on heading
+		moveByHeading();
+		
+		//moves by heading
+		if(this.lastActionStatus.equals("ok"))
+		{
+			moveByHeading();
+		}//end move by heading
+		//move around obstacle
+		else
+		{
+			moveAroundObstacle();
+		}//end obstacle
 	}//end agentFunction
+	
+	
 	//-----------------------------EDITS----------------------------------------------------------
 
  
@@ -215,6 +341,10 @@ public class ReactiveAgent extends Frame
 					}//end for
     }//end processRetinalField
 
+
+ 
+ 
+ 
  
     /**
      * run iterates through program commands
@@ -225,19 +355,10 @@ public class ReactiveAgent extends Frame
 	{
 		//-----------------------------EDITS----------------------------------------------------------
 		getSensoryInfo();
-		effector = agentFunction();
-		
-		//testing
-		System.out.println("The current effector is " + effector);
-		//testing
-		
-		sendEffectorCommand(effector);
+
 		while(true) 
 		{
-			gd.repaint();
-			getSensoryInfo();
-			effector = agentFunction();
-			sendEffectorCommand(effector);
+			agentFunction();
 		}//end while
 		
 		//-----------------------------EDITS----------------------------------------------------------
