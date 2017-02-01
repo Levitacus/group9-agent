@@ -17,7 +17,6 @@ public class SensoryPacket {
     String status;
     String smell;
     List<Character> inventory;
-    //List<Character>[][] visualArray = (List<Character>[][])new ArrayList[7][5];
     ArrayList<ArrayList<Vector<Character>>> visualArray;
     List<Character> groundContents;
     String messages;
@@ -212,7 +211,8 @@ public class SensoryPacket {
      * Renders the visual information as semi-formatted string, making no allowances for
      * cells with more than one object
      */
-    public void printVisualArray(){
+		 
+	  public void printVisualArray(){
 	for ( ArrayList<Vector<Character>> row : visualArray ){
 	    for ( Vector<Character> cell : row ){
 		if ( cell != null ){
@@ -228,5 +228,4 @@ public class SensoryPacket {
 	}
 	System.out.println();
     }
-    
 }

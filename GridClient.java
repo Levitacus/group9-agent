@@ -10,11 +10,11 @@ import java.net.*;
  */
 
 public class GridClient {
-    protected Socket gridSocket;			// socket for communicating w/ server
-    protected PrintWriter gridOut;                      // takes care of output stream for sockets
-    protected BufferedReader gridIn;			// bufferedreader for input reading
-    protected String myID;
-    public static final int MAEDENPORT = 7237;       // uses port 1237 on localhost
+    public Socket gridSocket;// socket for communicating w/ server
+    public PrintWriter gridOut;// takes care of output stream for sockets
+    public BufferedReader gridIn;// bufferedreader for input reading
+    public String myID;
+    public static final int MAEDENPORT = 7237;// uses port 1237 on localhost
 
 
     /**
@@ -39,11 +39,11 @@ public class GridClient {
 
 	    // create output stream to communicate with grid
             gridOut = new PrintWriter(gridSocket.getOutputStream(), true); 
-	    gridOut.println("base"); // send role to server
+						gridOut.println("base"); // send role to server
 
 	    //buffered reader reads from input stream from grid
             gridIn = new BufferedReader(new InputStreamReader(gridSocket.getInputStream()));
-	    myID = gridIn.readLine(); // read this agent's ID number
+						myID = gridIn.readLine(); // read this agent's ID number
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + h);
             System.exit(1);
@@ -52,7 +52,6 @@ public class GridClient {
             System.exit(1);
         }
     }
-	
     /**
      * sensoryGet : this should return an array of strings corresponding to lines read from
      * the Grid.  
@@ -70,6 +69,7 @@ public class GridClient {
      *
      * *NOTE: GOBAgent only looks at first letter of command string unless talk or shout is sent*
      */
+	
     public void effectorSend(String command) {
 	gridOut.println(command);
     }
